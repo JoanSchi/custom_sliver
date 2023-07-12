@@ -16,38 +16,14 @@
 // along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
-
-  @override
-  State<MyWidget> createState() => _MyWidgetState();
-}
-
-class _MyWidgetState extends State<MyWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(30.0),
-      child: Container(
-        alignment: Alignment.center,
-        constraints: const BoxConstraints(
-          maxWidth: 300,
-          maxHeight: 100,
-        ),
-      ),
-    );
-  }
-}
-
-class SliverClipRRect extends SingleChildRenderObjectWidget {
+class SliverLayerClipRRect extends SingleChildRenderObjectWidget {
   /// Creates a sliver that applies padding on each side of another sliver.
   ///
   /// The [padding] argument must not be null.
-  const SliverClipRRect({
+  const SliverLayerClipRRect({
     super.key,
     this.borderRadius = BorderRadius.zero,
     this.clipper,
@@ -56,7 +32,7 @@ class SliverClipRRect extends SingleChildRenderObjectWidget {
   }) : super(child: sliver);
 
   final BorderRadiusGeometry? borderRadius;
-  final SliverLayerCustomClipper<RRect>? clipper;
+  final CustomClipper<RRect>? clipper;
   final Clip clipBehavior;
 
   @override
@@ -76,7 +52,7 @@ class SliverClipRRect extends SingleChildRenderObjectWidget {
   }
 }
 
-class RenderClipRRect extends RenderSliverClip<RRect> {
+class RenderClipRRect extends RenderSliverLayerClip<RRect> {
   /// Creates a rounded-rectangular clip.
   ///
   /// The [borderRadius] defaults to [BorderRadius.zero], i.e. a rectangle with
@@ -179,20 +155,20 @@ class RenderClipRRect extends RenderSliverClip<RRect> {
   // }
 }
 
-abstract class RenderSliverClip<T> extends RenderSliver
+abstract class RenderSliverLayerClip<T> extends RenderSliver
     with RenderObjectWithChildMixin<RenderSliver> {
-  RenderSliverClip(
-      {Clip? clipBehavior, required SliverLayerCustomClipper<T>? clipper})
+  RenderSliverLayerClip(
+      {Clip? clipBehavior, required CustomClipper<T>? clipper})
       : _clipBehavior = clipBehavior ?? Clip.none,
         _clipper = clipper;
 
-  SliverLayerCustomClipper<T>? get clipper => _clipper;
-  SliverLayerCustomClipper<T>? _clipper;
-  set clipper(SliverLayerCustomClipper<T>? newClipper) {
+  CustomClipper<T>? get clipper => _clipper;
+  CustomClipper<T>? _clipper;
+  set clipper(CustomClipper<T>? newClipper) {
     if (_clipper == newClipper) {
       return;
     }
-    final SliverLayerCustomClipper<T>? oldClipper = _clipper;
+    final CustomClipper<T>? oldClipper = _clipper;
     _clipper = newClipper;
     assert(newClipper != null || oldClipper != null);
     if (newClipper == null ||
@@ -354,11 +330,10 @@ abstract class RenderSliverClip<T> extends RenderSliver
   void _updateClip(Offset offset) {
     final clipSize = constraintsToSize;
     offset = Offset.zero;
-    // if (_clip == null || _lastClipSize != clipSize) {
-    _clip = _clipper?.getClip(offset, clipSize) ?? _defaultClip(offset);
-    _lastClipSize = clipSize;
-
-    // }
+    if (_clip == null || _lastClipSize != clipSize) {
+      _clip = _clipper?.getClip(clipSize) ?? _defaultClip(offset);
+      _lastClipSize = clipSize;
+    }
   }
 
   Size get constraintsToSize {
@@ -387,8 +362,7 @@ abstract class RenderSliverClip<T> extends RenderSliver
       case Clip.hardEdge:
       case Clip.antiAlias:
       case Clip.antiAliasWithSaveLayer:
-        return _clipper?.getApproximateClipRect(Offset.zero, size) ??
-            Offset.zero & size;
+        return _clipper?.getApproximateClipRect(size) ?? Offset.zero & size;
     }
   }
 
@@ -541,63 +515,63 @@ abstract class RenderSliverClip<T> extends RenderSliver
 //   }
 // }
 
-abstract class SliverLayerCustomClipper<T> extends Listenable {
-  /// Creates a custom clipper.
-  ///
-  /// The clipper will update its clip whenever [reclip] notifies its listeners.
-  const SliverLayerCustomClipper({Listenable? reclip}) : _reclip = reclip;
+// abstract class SliverLayerCustomClipper<T> extends Listenable {
+//   /// Creates a custom clipper.
+//   ///
+//   /// The clipper will update its clip whenever [reclip] notifies its listeners.
+//   const SliverLayerCustomClipper({Listenable? reclip}) : _reclip = reclip;
 
-  final Listenable? _reclip;
+//   final Listenable? _reclip;
 
-  /// Register a closure to be notified when it is time to reclip.
-  ///
-  /// The [CustomClipper] implementation merely forwards to the same method on
-  /// the [Listenable] provided to the constructor in the `reclip` argument, if
-  /// it was not null.
-  @override
-  void addListener(VoidCallback listener) => _reclip?.addListener(listener);
+//   /// Register a closure to be notified when it is time to reclip.
+//   ///
+//   /// The [CustomClipper] implementation merely forwards to the same method on
+//   /// the [Listenable] provided to the constructor in the `reclip` argument, if
+//   /// it was not null.
+//   @override
+//   void addListener(VoidCallback listener) => _reclip?.addListener(listener);
 
-  /// Remove a previously registered closure from the list of closures that the
-  /// object notifies when it is time to reclip.
-  ///
-  /// The [CustomClipper] implementation merely forwards to the same method on
-  /// the [Listenable] provided to the constructor in the `reclip` argument, if
-  /// it was not null.
-  @override
-  void removeListener(VoidCallback listener) =>
-      _reclip?.removeListener(listener);
+//   /// Remove a previously registered closure from the list of closures that the
+//   /// object notifies when it is time to reclip.
+//   ///
+//   /// The [CustomClipper] implementation merely forwards to the same method on
+//   /// the [Listenable] provided to the constructor in the `reclip` argument, if
+//   /// it was not null.
+//   @override
+//   void removeListener(VoidCallback listener) =>
+//       _reclip?.removeListener(listener);
 
-  /// Returns a description of the clip given that the render object being
-  /// clipped is of the given size.
-  T getClip(Offset offset, Size size);
+//   /// Returns a description of the clip given that the render object being
+//   /// clipped is of the given size.
+//   T getClip(Offset offset, Size size);
 
-  /// Returns an approximation of the clip returned by [getClip], as
-  /// an axis-aligned Rect. This is used by the semantics layer to
-  /// determine whether widgets should be excluded.
-  ///
-  /// By default, this returns a rectangle that is the same size as
-  /// the RenderObject. If getClip returns a shape that is roughly the
-  /// same size as the RenderObject (e.g. it's a rounded rectangle
-  /// with very small arcs in the corners), then this may be adequate.
-  Rect getApproximateClipRect(Offset offset, Size size) => offset & size;
+//   /// Returns an approximation of the clip returned by [getClip], as
+//   /// an axis-aligned Rect. This is used by the semantics layer to
+//   /// determine whether widgets should be excluded.
+//   ///
+//   /// By default, this returns a rectangle that is the same size as
+//   /// the RenderObject. If getClip returns a shape that is roughly the
+//   /// same size as the RenderObject (e.g. it's a rounded rectangle
+//   /// with very small arcs in the corners), then this may be adequate.
+//   Rect getApproximateClipRect(Offset offset, Size size) => offset & size;
 
-  /// Called whenever a new instance of the custom clipper delegate class is
-  /// provided to the clip object, or any time that a new clip object is created
-  /// with a new instance of the custom clipper delegate class (which amounts to
-  /// the same thing, because the latter is implemented in terms of the former).
-  ///
-  /// If the new instance represents different information than the old
-  /// instance, then the method should return true, otherwise it should return
-  /// false.
-  ///
-  /// If the method returns false, then the [getClip] call might be optimized
-  /// away.
-  ///
-  /// It's possible that the [getClip] method will get called even if
-  /// [shouldReclip] returns false or if the [shouldReclip] method is never
-  /// called at all (e.g. if the box changes size).
-  bool shouldReclip(covariant SliverLayerCustomClipper<T> oldClipper);
+//   /// Called whenever a new instance of the custom clipper delegate class is
+//   /// provided to the clip object, or any time that a new clip object is created
+//   /// with a new instance of the custom clipper delegate class (which amounts to
+//   /// the same thing, because the latter is implemented in terms of the former).
+//   ///
+//   /// If the new instance represents different information than the old
+//   /// instance, then the method should return true, otherwise it should return
+//   /// false.
+//   ///
+//   /// If the method returns false, then the [getClip] call might be optimized
+//   /// away.
+//   ///
+//   /// It's possible that the [getClip] method will get called even if
+//   /// [shouldReclip] returns false or if the [shouldReclip] method is never
+//   /// called at all (e.g. if the box changes size).
+//   bool shouldReclip(covariant SliverLayerCustomClipper<T> oldClipper);
 
-  @override
-  String toString() => objectRuntimeType(this, 'CustomClipper');
-}
+//   @override
+//   String toString() => objectRuntimeType(this, 'CustomClipper');
+// }

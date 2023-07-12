@@ -48,5 +48,12 @@
             "request": "launch",
             "type": "dart"
         },
+        {
+            "name": "example_sliver_layer (profile mode)",
+            "cwd": "example_sliver_back_fore_ground",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
     ]
 }

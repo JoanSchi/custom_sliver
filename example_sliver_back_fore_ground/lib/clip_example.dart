@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:custom_sliver/sliver_layer/sliver_background_forground.dart';
-import 'package:custom_sliver/sliver_layer/sliver_clip.dart';
+import 'package:custom_sliver/sliver_layer/sliver_layer_box.dart';
+import 'package:custom_sliver/sliver_layer/sliver_layer_clip.dart';
 import 'package:custom_sliver/sliver_layer/sliver_layer_outside.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +50,7 @@ class ClipExample extends StatelessWidget {
     return CustomScrollView(
       scrollDirection: axis,
       slivers: [
-        SliverClipRRect(
+        SliverLayerClipRRect(
           borderRadius: BorderRadius.circular(120),
           sliver: SliverList(
             delegate: SliverChildListDelegate.fixed([
@@ -76,7 +76,7 @@ class ClipExample extends StatelessWidget {
             ]),
           ),
         ),
-        SliverBackForeGround(
+        SliverLayerBox(
           children: [
             SliverLayerOutside(
                 beginOutside: 40.0,
@@ -131,7 +131,7 @@ class ClipExample extends StatelessWidget {
             ])),
           ],
         ),
-        SliverClipRRect(
+        SliverLayerClipRRect(
           borderRadius: BorderRadius.circular(120),
           sliver: SliverList(
             delegate: SliverChildListDelegate.fixed([

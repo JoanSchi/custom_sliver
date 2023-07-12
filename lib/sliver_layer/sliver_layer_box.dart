@@ -21,27 +21,27 @@ import 'dart:math' as math;
 import 'sliver_layer.dart';
 import 'sliver_layer_constraints.dart';
 
-class SliverBackForeGround extends MultiChildRenderObjectWidget {
-  const SliverBackForeGround({
+class SliverLayerBox extends MultiChildRenderObjectWidget {
+  const SliverLayerBox({
     super.key,
     super.children,
   });
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderSliverBackForeGround();
+    return RenderSliverLayerBox();
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant RenderSliverBackForeGround renderObject) {
+      BuildContext context, covariant RenderSliverLayerBox renderObject) {
     // renderObject
     // SliverToBoxAdapter();
     // SliverPadding();
   }
 }
 
-class RenderSliverBackForeGround extends RenderSliver
+class RenderSliverLayerBox extends RenderSliver
     with
         ContainerRenderObjectMixin<RenderObject,
             MultiSliverPhysicalParentData> {

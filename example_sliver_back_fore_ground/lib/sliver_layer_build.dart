@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
 
-import 'package:custom_sliver/sliver_layer/sliver_background_forground.dart';
-import 'package:custom_sliver/sliver_layer/sliver_clip.dart';
+import 'package:custom_sliver/sliver_layer/sliver_layer_box.dart';
 import 'package:custom_sliver/sliver_layer/sliver_layer_builder.dart';
+import 'package:custom_sliver/sliver_layer/sliver_layer_clip.dart';
 import 'package:custom_sliver/sliver_layer/sliver_layer_padding.dart';
 import 'package:flutter/material.dart';
 
@@ -70,14 +70,14 @@ class SliverLayerBuilderExample extends StatelessWidget {
             ),
           ]),
         ),
-        SliverBackForeGround(
+        SliverLayerBox(
           children: [
             SliverLayerBuilder(
               delegate: BackgroundSliverLayerDelegate(axis),
             ),
             SliverLayerPadding(
               padding: const EdgeInsets.all(10.0),
-              sliver: SliverClipRRect(
+              sliver: SliverLayerClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(40)),
                 sliver: SliverList(
                     delegate: SliverChildListDelegate.fixed([

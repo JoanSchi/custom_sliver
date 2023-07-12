@@ -16,7 +16,6 @@
 // along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 
