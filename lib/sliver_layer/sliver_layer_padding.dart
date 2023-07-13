@@ -313,12 +313,10 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
       overlap = math.max(0.0, constraints.overlap - beforePadding);
     }
 
-    // final double scrollOffsetCorrection =
-    //     clampDouble(constraints.scrollOffset, 0.0, beforePadding);
-
     child!.layout(
       constraints.copyWith(
-        scrollOffset: math.max(0.0, constraints.scrollOffset - beforePadding),
+        scrollOffset: constraints
+            .scrollOffset, //With padding no correction! math.max(0.0, constraints.scrollOffset - beforePadding),
         cacheOrigin: math.min(0.0, constraints.cacheOrigin + beforePadding),
         overlap: overlap,
         remainingPaintExtent:
@@ -385,8 +383,7 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
     /// omdat anders layoutExtent niet constant is
     ///
     ///
-    final double correction =
-        clampDouble(constraints.scrollOffset, 0.0, beforePadding);
+
     //beforePadding;
     //werkt goed
     double layoutExtent = math.max(
@@ -394,19 +391,18 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
         math.min(
           childLayoutGeometry.scrollExtent +
               mainAxisPadding -
-              constraints.scrollOffset +
-              correction,
+              constraints.scrollOffset,
           // clampDouble(constraints.scrollOffset, 0.0, beforePadding),
           constraints.remainingPaintExtent,
         ));
 
     double paintExtent = math.min(
-      childLayoutGeometry.paintExtent + mainAxisPadding + correction,
+      childLayoutGeometry.paintExtent + mainAxisPadding,
       constraints.remainingPaintExtent,
     );
 
     final cacheExtent = math.min(
-        mainAxisPadding + childLayoutGeometry.cacheExtent + correction,
+        mainAxisPadding + childLayoutGeometry.cacheExtent,
         // clampDouble(constraints.scrollOffset, 0.0, beforePadding),
         constraints.remainingCacheExtent);
 
@@ -417,7 +413,7 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
     //     '>>>>>>>>>> ${constraints.scrollOffset.toInt()} ${childLayoutGeometry.scrollExtent.toInt()} ${childLayoutGeometry.paintOrigin.toInt()}');
 
     final double scrollExtent =
-        mainAxisPadding + childLayoutGeometry.scrollExtent + correction;
+        mainAxisPadding + childLayoutGeometry.scrollExtent;
 
     // Prevent layoutExtent smaller than paintExtent
     layoutExtent = math.min(layoutExtent, paintExtent);
@@ -429,8 +425,7 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
       paintExtent: paintExtent,
       layoutExtent: layoutExtent,
       cacheExtent: cacheExtent,
-      maxPaintExtent:
-          correction + mainAxisPadding + childLayoutGeometry.maxPaintExtent,
+      maxPaintExtent: mainAxisPadding + childLayoutGeometry.maxPaintExtent,
       hitTestExtent: math.max(
         mainAxisPadding + childLayoutGeometry.paintExtent,
         beforePadding + childLayoutGeometry.hitTestExtent,
