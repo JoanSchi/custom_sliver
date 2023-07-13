@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
 
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
@@ -383,7 +385,9 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
     /// omdat anders layoutExtent niet constant is
     ///
     ///
-    final double correction = beforePadding;
+    final double correction =
+        clampDouble(constraints.scrollOffset, 0.0, beforePadding);
+    //beforePadding;
     //werkt goed
     double layoutExtent = math.max(
         0.0,
@@ -425,7 +429,8 @@ abstract class RenderSliverLayerEdgeInsetsPadding extends RenderSliver
       paintExtent: paintExtent,
       layoutExtent: layoutExtent,
       cacheExtent: cacheExtent,
-      maxPaintExtent: mainAxisPadding + childLayoutGeometry.maxPaintExtent,
+      maxPaintExtent:
+          correction + mainAxisPadding + childLayoutGeometry.maxPaintExtent,
       hitTestExtent: math.max(
         mainAxisPadding + childLayoutGeometry.paintExtent,
         beforePadding + childLayoutGeometry.hitTestExtent,

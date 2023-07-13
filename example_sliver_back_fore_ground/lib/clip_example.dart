@@ -65,7 +65,7 @@ class ClipExample extends StatelessWidget {
                   color: const Color.fromARGB(255, 145, 208, 244),
                   child: OverflowBox(
                       child: TextButton(
-                    child: const Text('Clip'),
+                    child: const Text('Press for Ripple'),
                     onPressed: () {},
                   ))),
               Container(
@@ -146,7 +146,7 @@ class ClipExample extends StatelessWidget {
                   color: const Color.fromARGB(255, 145, 208, 244),
                   child: OverflowBox(
                       child: TextButton(
-                    child: const Text('Clip'),
+                    child: const Text('Press for Ripple'),
                     onPressed: () {},
                   ))),
               Container(

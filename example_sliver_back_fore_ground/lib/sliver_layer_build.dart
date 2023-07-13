@@ -44,7 +44,7 @@ class SliverLayerBuilderExample extends StatelessWidget {
     } else {
       width = 300.0;
       edgeWidth = 40.0;
-      edgeWidth2 = 56.0;
+      edgeWidth2 = 64.0;
       spacerWidth = 800.0;
     }
 
@@ -86,9 +86,9 @@ class SliverLayerBuilderExample extends StatelessWidget {
                       width: edgeWidth2,
                       color: Colors.white.withOpacity(0.5),
                       child: TextButton(
-                        child: const Text('F'),
+                        child: const Text('Press'),
                         onPressed: () {
-                          debugPrint('F');
+                          debugPrint('Press');
                         },
                       )),
                   SizedBox(
@@ -126,9 +126,57 @@ class SliverLayerBuilderExample extends StatelessWidget {
                       width: edgeWidth2,
                       color: Colors.white.withOpacity(0.5),
                       child: TextButton(
-                        child: const Text('L'),
+                        child: const Text('Press'),
                         onPressed: () {
-                          debugPrint('L');
+                          debugPrint('Press');
+                        },
+                      )),
+                ])),
+              ),
+            ),
+            SliverLayerBuilder(
+              delegate: TopSliverLayerDelegate(axis),
+            )
+          ],
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate.fixed([
+            Container(
+              height: edgeHeight,
+              width: edgeWidth,
+              color: Colors.brown,
+            ),
+            Container(
+              height: spacerHeight,
+              width: spacerWidth,
+              color: const Color.fromARGB(255, 145, 208, 244),
+            ),
+            Container(
+              height: edgeHeight,
+              width: edgeWidth,
+              color: Colors.brown,
+            ),
+          ]),
+        ),
+        SliverLayerBox(
+          children: [
+            SliverLayerBuilder(
+              delegate: BackgroundSliverLayerDelegate(axis),
+            ),
+            SliverLayerPadding(
+              padding: const EdgeInsets.all(10.0),
+              sliver: SliverLayerClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(40)),
+                sliver: SliverList(
+                    delegate: SliverChildListDelegate.fixed([
+                  Container(
+                      height: height,
+                      width: width,
+                      color: Colors.white.withOpacity(0.5),
+                      child: TextButton(
+                        child: const Text('Press'),
+                        onPressed: () {
+                          debugPrint('Press');
                         },
                       )),
                 ])),
