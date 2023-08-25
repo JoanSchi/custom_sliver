@@ -4,10 +4,10 @@
 
 import 'dart:math' as math;
 
+import 'package:custom_sliver/custom/sliver_clip_rrect.dart';
+
 import '/examples/general_widgets.dart';
 import 'package:flutter/material.dart';
-
-import 'package:custom_sliver/sliver_layer/sliver_layer_clip.dart';
 
 class ClipProperties {
   ClipProperties({
@@ -138,7 +138,7 @@ class _ClipExampleState extends State<ClipExample> {
                         RichText(
                           text: TextSpan(
                             text:
-                                'Five rounded sliver clippers (next sliver). At the moment the rounded SliverLayerClipRRect widget does only clip the drawing not the hittest.'
+                                'Five rounded sliver clippers (next sliver). At the moment the rounded SliverClipRRect widget does only clip the drawing not the hittest.'
                                 '\n',
                             style: TextStyle(
                                 color: Colors.brown[900],
@@ -181,7 +181,7 @@ class _ClipExampleState extends State<ClipExample> {
             ]),
           ),
           for (ClipProperties p in listProperties) ...[
-            SliverLayerClipRRect(
+            SliverClipRRect(
               borderRadius: BorderRadius.circular(maxRadius * p.ratio),
               sliver: SliverToBoxAdapter(
                 child: SizedBox(

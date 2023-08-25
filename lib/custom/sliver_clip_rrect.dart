@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 
-class SliverLayerClipRRect extends SingleChildRenderObjectWidget {
+class SliverClipRRect extends SingleChildRenderObjectWidget {
   /// Creates a sliver that applies padding on each side of another sliver.
   ///
   /// The [padding] argument must not be null.
-  const SliverLayerClipRRect({
+  const SliverClipRRect({
     super.key,
     this.borderRadius = BorderRadius.zero,
     this.clipper,
@@ -39,7 +39,7 @@ class SliverLayerClipRRect extends SingleChildRenderObjectWidget {
   }
 }
 
-class RenderClipRRect extends RenderSliverLayerClip<RRect> {
+class RenderClipRRect extends RenderLayerClip<RRect> {
   /// Creates a rounded-rectangular clip.
   ///
   /// The [borderRadius] defaults to [BorderRadius.zero], i.e. a rectangle with
@@ -142,10 +142,9 @@ class RenderClipRRect extends RenderSliverLayerClip<RRect> {
   // }
 }
 
-abstract class RenderSliverLayerClip<T> extends RenderSliver
+abstract class RenderLayerClip<T> extends RenderSliver
     with RenderObjectWithChildMixin<RenderSliver> {
-  RenderSliverLayerClip(
-      {Clip? clipBehavior, required CustomClipper<T>? clipper})
+  RenderLayerClip({Clip? clipBehavior, required CustomClipper<T>? clipper})
       : _clipBehavior = clipBehavior ?? Clip.none,
         _clipper = clipper;
 

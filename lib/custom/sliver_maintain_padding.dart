@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
 
-class SliverLayerPadding extends SingleChildRenderObjectWidget {
+class SliverMaintainPadding extends SingleChildRenderObjectWidget {
   /// Creates a sliver that applies padding on each side of another sliver.
   ///
   /// The [padding] argument must not be null.
-  const SliverLayerPadding({
+  const SliverMaintainPadding({
     super.key,
     required this.padding,
     Widget? sliver,

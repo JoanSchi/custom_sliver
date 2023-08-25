@@ -7,7 +7,7 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
-import 'package:custom_sliver/sliver_layer/sliver_layer.dart';
+import 'package:custom_sliver/layers/sliver_layer.dart';
 
 import 'sliver_layer_constraints.dart';
 

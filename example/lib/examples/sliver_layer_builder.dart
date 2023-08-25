@@ -2,14 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-import 'package:custom_sliver/sliver_layer/sliver_layer.dart';
+import 'package:custom_sliver/custom/sliver_clip_rrect.dart';
+import 'package:custom_sliver/custom/sliver_maintain_padding.dart';
+import 'package:custom_sliver/layers/sliver_layer.dart';
+import 'package:custom_sliver/layers/sliver_layer_box.dart';
+import 'package:custom_sliver/layers/sliver_layer_builder.dart';
+
 import '/coffee_brands.dart';
 import '/examples/general_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_sliver/sliver_layer/sliver_layer_box.dart';
-import 'package:custom_sliver/sliver_layer/sliver_layer_builder.dart';
-import 'package:custom_sliver/sliver_layer/sliver_layer_clip.dart';
-import 'package:custom_sliver/sliver_layer/sliver_layer_padding.dart';
+
 import 'dart:math' as math;
 
 class SliverLayerBuilderExample extends StatelessWidget {
@@ -124,7 +126,7 @@ class SliverLayerBuilderExample extends StatelessWidget {
                         color: theme.primaryColor, fontSize: headerSize)),
                 TextSpan(
                     text:
-                        '\nThe coffee list is padded and clipped (rounded). Additinal padding is added for the header and the scrollIndicator. Widgets Tree: SliverLayerPadding -> SliverLayerClipRRect -> Sliverlist'
+                        '\nThe coffee list is padded and clipped (rounded). Additinal padding is added for the header and the scrollIndicator. Widgets Tree: SliverMaintainPadding -> SliverClipRRect -> Sliverlist'
                         '\n\n',
                     style: TextStyle(
                         color: Colors.brown[900], fontSize: paragraphSize)),
@@ -134,7 +136,7 @@ class SliverLayerBuilderExample extends StatelessWidget {
                         color: theme.primaryColor, fontSize: headerSize)),
                 TextSpan(
                     text:
-                        '\nThe floating button starts to appears from the top after 120 with animationSpace of 32 and starts to disappears after the (bottom - animationspace) reach (110 - 32). The animationValue (0.0 to 1.0) can be easily calcualted with animationValueByPosition function, by providing top, bottom and animationSpace and off course scrollOffset, scrollLayout and scrollExtent.',
+                        '\nThe floating button starts to appears from the top after 120 with animationSpace of 32 and starts to disappears after the (bottom - animationspace) reach (110 - 32). The animationValue (0.0 to 1.0) can be easily calcualted with the buildObject SliverLayerAnimationObject. The rebuild is only trigged if the animationValue is changed.',
                     style: TextStyle(
                         color: Colors.brown[900], fontSize: paragraphSize)),
               ]),
@@ -179,13 +181,13 @@ class SliverLayerBuilderExample extends StatelessWidget {
               SliverLayerBuilder(
                 delegate: InfoSliverLayerDelegate(axis),
               ),
-              SliverLayerPadding(
+              SliverMaintainPadding(
                 padding: axis == Axis.vertical
                     ? const EdgeInsets.only(
                         left: 20.0, top: 52.0, right: 10.0, bottom: 10.0)
                     : const EdgeInsets.only(
                         left: 10.0, top: 64.0, right: 10.0, bottom: 10.0),
-                sliver: SliverLayerClipRRect(
+                sliver: SliverClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(40)),
                   sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {

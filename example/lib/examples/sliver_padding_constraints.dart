@@ -3,10 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-import 'package:custom_sliver/sliver_layer/sliver_layer_clip.dart';
+import 'package:custom_sliver/custom/sliver_clip_rrect.dart';
+import 'package:custom_sliver/custom/sliver_padding_constrain_align.dart';
+
 import '/examples/general_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:custom_sliver/sliver_padding_constrain_align.dart';
 import 'package:flutter/services.dart';
 
 class Properties {
@@ -269,7 +270,7 @@ class _SliverPaddingConstraintsState extends State<SliverPaddingConstraints> {
                   ]),
                 ),
                 SliverPaddingConstrainAlign(
-                  sliver: SliverLayerClipRRect(
+                  sliver: SliverClipRRect(
                     borderRadius: BorderRadius.circular(40.0),
                     sliver: SliverList(
                         delegate: SliverChildListDelegate.fixed([

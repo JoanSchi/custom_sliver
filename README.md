@@ -1,40 +1,59 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+# Custom Sliver
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+The Custom Sliver package contains following slivers:
+- SliverLayerBox, to create layers around the sliver.
+    - SliverLayer, SliverLayerbuilder, SliverLayerOutside
+- SliverClipRRect
+- SliverMaintainPadding
+- SliverPaddingConstrainAlign
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
-## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
 
-## Getting started
+## SliverLayers, with SliverMaintainPadding and SliverClipRRect
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+```Dart
+class SliverLayerBuilderExample extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    CustomScrollView(slivers: [
+      SliverLayer(
+          child: Container(
+              decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(40.0),
+        ),
+        color: Color(0xFFF9F5E7),
+      ))),
+      SliverLayerBuilder(delegate: ProgressSliverLayerDelegate()),
+      SliverMaintainPadding(
+          padding: const EdgeInsets.only(
+              left: 20.0, top: 52.0, right: 10.0, bottom: 10.0),
+          sliver: SliverClipRRect(
+              //A default SliverRender like SliverList (Add only one)
+              sliver: SliverList(children: children)))
+    ]);
+  }
+}
 
-## Usage
+class ProgressSliverLayerDelegate
+    extends SliverLayerDelegate<SliverLayerPositionObject> {
+  ProgressSliverLayerDelegate();
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+  @override
+  Widget build(BuildContext context, SliverLayerPositionObject object) {
+    // Make your progressIndicator with custompainter.
+  }
 
-```dart
-const like = 'sample';
+  @override
+  SliverLayerPositionObject buildObject(
+          double scrollOffset, double scrollExtent, double layoutExtent) =>
+      SliverLayerPositionObject(
+        scrollOffset: scrollOffset,
+        scrollExtent: scrollExtent,
+        layoutExtent: layoutExtent,
+      );
+}
 ```
 
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
-# custom_sliver

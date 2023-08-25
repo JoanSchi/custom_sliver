@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-import 'package:custom_sliver/sliver_layer/sliver_layer_box.dart';
-import 'package:custom_sliver/sliver_layer/sliver_layer_outside.dart';
+import 'package:custom_sliver/layers/sliver_layer_box.dart';
+import 'package:custom_sliver/layers/sliver_layer_outside.dart';
+
 import '/coffee_brands.dart';
 import '/examples/general_widgets.dart';
 import 'package:flutter/material.dart';
