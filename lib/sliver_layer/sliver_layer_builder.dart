@@ -1,41 +1,108 @@
-// Copyright (C) 2023 Joan Schipper
-//
-// This file is part of custom_sliver.
-//
-// custom_sliver is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// custom_sliver is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+// Copyright 2023 Joan Schipper. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+import 'dart:ui';
+
+import 'package:flutter/widgets.dart';
 
 import 'package:custom_sliver/sliver_layer/sliver_layer.dart';
-import 'package:flutter/widgets.dart';
+
 import 'sliver_layer_constraints.dart';
 
-abstract class SliverLayerDelegate {
-  Widget build(BuildContext context, double scrollOffset, double scrollExtent,
-      double layoutExtent);
+class SliverLayerPositionObject {
+  final double scrollOffset;
+  final double scrollExtent;
+  final double layoutExtent;
+
+  SliverLayerPositionObject({
+    required this.scrollOffset,
+    required this.scrollExtent,
+    required this.layoutExtent,
+  });
+
+  @override
+  bool operator ==(covariant SliverLayerPositionObject other) {
+    if (identical(this, other)) return true;
+
+    return other.scrollOffset == scrollOffset &&
+        other.scrollExtent == scrollExtent &&
+        other.layoutExtent == layoutExtent;
+  }
+
+  @override
+  int get hashCode =>
+      scrollOffset.hashCode ^ scrollExtent.hashCode ^ layoutExtent.hashCode;
+}
+
+class SliverLayerAnimationObject {
+  SliverLayerAnimationObject(
+      {required double scrollOffset,
+      required double layoutExtent,
+      required double top,
+      required double bottom,
+      required double animationSpace})
+      : animationValue = animationValueByPosition(
+            scrollOffset: scrollOffset,
+            layoutExtent: layoutExtent,
+            top: top,
+            bottom: bottom,
+            animationSpace: animationSpace);
+
+  final double animationValue;
+
+  static double animationValueByPosition(
+      {required double scrollOffset,
+      required double layoutExtent,
+      required double top,
+      required double bottom,
+      required double animationSpace}) {
+    final double t = clampDouble(
+        (layoutExtent + scrollOffset - top) / animationSpace, 0.0, 1.0);
+
+    final double b =
+        clampDouble((layoutExtent - bottom) / animationSpace, 0.0, 1.0);
+
+    return t * b;
+  }
+
+  @override
+  bool operator ==(covariant SliverLayerAnimationObject other) {
+    if (identical(this, other)) return true;
+
+    return other.animationValue == animationValue;
+  }
+
+  @override
+  int get hashCode => animationValue.hashCode;
+}
+
+abstract class SliverLayerDelegate<T> {
+  T buildObject(double scrollOffset, double scrollExtent, double layoutExtent);
+
+  Widget? build(BuildContext context, T object);
 
   bool shouldRebuild(covariant SliverLayerDelegate oldDelegate) => true;
 }
 
-mixin _SliverLayerRenderForWidgetsMixin on RenderSliverLayer {
+mixin _SliverLayerRenderForWidgetsMixin<T> on RenderSliverLayer<T> {
   _SliverFrameElement? _element;
 
   // AnimationController? get _controller => _element!.widget.controller;
 
   @override
   void updateChild(
-      double scrollOffset, double scrollExtent, double viewPortExtent) {
+    T object,
+  ) {
     assert(_element != null);
-    _element!._build(scrollOffset, scrollExtent, viewPortExtent);
+    _element!._build(object);
+  }
+
+  @override
+  T buildObject(double scrollOffset, double scrollExtent, double layoutExtent) {
+    assert(_element != null);
+    return _element!._buildObject(scrollOffset, scrollExtent, layoutExtent);
   }
 
   @protected
@@ -44,7 +111,7 @@ mixin _SliverLayerRenderForWidgetsMixin on RenderSliverLayer {
   }
 }
 
-class _SliverFrameElement extends RenderObjectElement {
+class _SliverFrameElement<T> extends RenderObjectElement {
   _SliverFrameElement(SliverLayerBuilder widget) : super(widget);
 
   @override
@@ -89,13 +156,13 @@ class _SliverFrameElement extends RenderObjectElement {
 
   Element? child;
 
-  void _build(double scrollOffset, double scrollExtent, double viewPortExtent) {
+  T _buildObject(
+          double scrollOffset, double scrollExtent, double viewPortExtent) =>
+      widget.delegate.buildObject(scrollOffset, scrollExtent, viewPortExtent);
+
+  void _build(T? object) {
     owner!.buildScope(this, () {
-      child = updateChild(
-          child,
-          widget.delegate
-              .build(this, scrollOffset, scrollExtent, viewPortExtent),
-          null);
+      child = updateChild(child, widget.delegate.build(this, object), null);
     });
   }
 
@@ -129,7 +196,7 @@ class _SliverFrameElement extends RenderObjectElement {
   }
 }
 
-class SliverLayerBuilder extends RenderObjectWidget {
+class SliverLayerBuilder<T> extends RenderObjectWidget {
   /// Creates a sliver that contains a single box widget.
   const SliverLayerBuilder({
     super.key,
@@ -144,16 +211,17 @@ class SliverLayerBuilder extends RenderObjectWidget {
   }
 
   @override
-  RenderSliverLayerBuilder createRenderObject(BuildContext context) =>
-      RenderSliverLayerBuilder();
+  RenderSliverLayerBuilder<T> createRenderObject(BuildContext context) =>
+      RenderSliverLayerBuilder<T>();
 }
 
-class RenderSliverLayerBuilder extends RenderSliverLayer
+class RenderSliverLayerBuilder<T> extends RenderSliverLayer
     with _SliverLayerRenderForWidgetsMixin {
   bool _needsUpdateChild = true;
-  double _lastScrollOffset = 0.0;
-  double _lastOffsetExtent = 0.0;
-  double _lastViewPortExtent = 0.0;
+  // double _lastScrollOffset = 0.0;
+  // double _lastOffsetExtent = 0.0;
+  // double _lastViewPortExtent = 0.0;
+  T? object;
 
   @override
   void markNeedsLayout() {
@@ -170,19 +238,23 @@ class RenderSliverLayerBuilder extends RenderSliverLayer
     double scrollOffset = constraints.scrollOffset;
     double offsetExtent = constraints.scrollExtent;
     double viewPortExtent = constraints.layoutExtent;
+    final oldObject = object;
 
-    if (_needsUpdateChild ||
-        _lastScrollOffset != scrollOffset ||
-        _lastOffsetExtent != offsetExtent ||
-        _lastViewPortExtent != viewPortExtent) {
+    object = buildObject(scrollOffset, offsetExtent, viewPortExtent);
+
+    if (_needsUpdateChild || object != oldObject
+        // (_lastScrollOffset != scrollOffset ||
+        //     _lastOffsetExtent != offsetExtent ||
+        //     _lastViewPortExtent != viewPortExtent)
+        ) {
       invokeLayoutCallback<SliverLayerConstraints>(
           (SliverLayerConstraints constraints) {
         assert(constraints == this.constraints);
-        updateChild(scrollOffset, offsetExtent, viewPortExtent);
+        updateChild(object);
       });
-      _lastScrollOffset = scrollOffset;
-      _lastOffsetExtent = offsetExtent;
-      _lastViewPortExtent = viewPortExtent;
+      // _lastScrollOffset = scrollOffset;
+      // _lastOffsetExtent = offsetExtent;
+      // _lastViewPortExtent = viewPortExtent;
       _needsUpdateChild = false;
     }
 

@@ -1,22 +1,9 @@
-// Copyright (C) 2023 Joan Schipper
-//
-// This file is part of custom_sliver.
-//
-// custom_sliver is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// custom_sliver is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright 2023 Joan Schipper. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:math' as math;
 import 'sliver_layer.dart';
 import 'sliver_layer_constraints.dart';
@@ -34,11 +21,7 @@ class SliverLayerBox extends MultiChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant RenderSliverLayerBox renderObject) {
-    // renderObject
-    // SliverToBoxAdapter();
-    // SliverPadding();
-  }
+      BuildContext context, covariant RenderSliverLayerBox renderObject) {}
 }
 
 class RenderSliverLayerBox extends RenderSliver
@@ -47,13 +30,57 @@ class RenderSliverLayerBox extends RenderSliver
             MultiSliverPhysicalParentData> {
   @override
   void performLayout() {
-    RenderObject? child = firstChild;
-
     if (firstChild == null) {
       geometry = SliverGeometry.zero;
       return;
     }
 
+    assert(() {
+      RenderObject? child = firstChild;
+      int countRenderSliver = 0;
+      int countRenderSliverLayer = 0;
+
+      while (child != null) {
+        switch (child) {
+          case (RenderSliver _):
+            {
+              countRenderSliver++;
+              if (countRenderSliver > 1) {
+                debugPrint('Add only one RenderSliver');
+                return false;
+              }
+              break;
+            }
+          case (RenderSliverLayer _):
+            {
+              countRenderSliverLayer++;
+              break;
+            }
+          default:
+            {
+              debugPrint('''Unsupported render found:
+                  - Use one SliverRender for example SliverList, SliverGrid or SliverFixedExtentList.
+                  - Add one or more RenderSliverLayer(s) before of after SliverRender for example: SliverLayer, SliverLayerBuilder or SliverLayoutOutside.''');
+              return false;
+            }
+        }
+        final childParent = child.parentData as ContainerBoxParentData;
+        child = childParent.nextSibling;
+      }
+
+      if (countRenderSliver == 0) {
+        debugPrint(
+            'No RenderSliver found. A RenderSliver is for example SliverList, SliverGrid or SliverFixedExtentList.');
+        return false;
+      }
+      if (countRenderSliverLayer == 0) {
+        debugPrint(
+            'No RenderSliverLayer(s) found, you can remove SliverLayerBox or add a SliverLayer, SliverLayerBuilder or SliverLayoutOutside.');
+      }
+      return true;
+    }());
+
+    RenderObject? child = firstChild;
     final SliverConstraints constraints = this.constraints;
 
     SliverGeometry? childLayoutGeometry;
@@ -122,17 +149,6 @@ class RenderSliverLayerBox extends RenderSliver
 
     while (child != null) {
       switch (child) {
-        // case (RenderSliverFrame renderSliverFrame):
-        //   {
-        //     renderSliverFrame.layout(SliverLayerConstraints(
-        //         axisDirection: constraints.axis,
-        //         scrollOffset: constraints.scrollOffset,
-        //         scrollExtent: childLayoutGeometry.scrollExtent,
-        //         overlap: constraints.overlap,
-        //         crossAxisExtent: constraints.crossAxisExtent,
-        //         viewportMainAxisExtent: constraints.viewportMainAxisExtent));
-        //     break;
-        //   }
         case (RenderSliverLayer renderSliverLayer):
           {
             renderSliverLayer.layout(SliverLayerConstraints(

@@ -1,20 +1,3 @@
-// Copyright (C) 2023 Joan Schipper
-//
-// This file is part of custom_sliver.
-//
-// custom_sliver is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// custom_sliver is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with custom_sliver.  If not, see <http://www.gnu.org/licenses/>.
-
 import 'package:custom_sliver/sliver_layer/sliver_layer_constraints.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
@@ -33,7 +16,7 @@ class SliverLayer extends SingleChildRenderObjectWidget {
       RenderSliverLayer();
 }
 
-class RenderSliverLayer extends RenderObject
+class RenderSliverLayer<T> extends RenderObject
     with RenderObjectWithChildMixin<RenderBox> {
   // layout input
   @override
@@ -108,8 +91,15 @@ class RenderSliverLayer extends RenderObject
   @override
   void debugResetSize() {}
 
+  T buildObject(double scrollOffset, double scrollExtent, double layoutExtent) {
+    throw UnimplementedError();
+  }
+
   void updateChild(
-      double scrollOffset, double scrollExtent, double viewPortExtent) {}
+    T object,
+  ) {
+    throw UnimplementedError();
+  }
 
   @override
   void debugAssertDoesMeetConstraints() {
@@ -234,7 +224,7 @@ class RenderSliverLayer extends RenderObject
           mainAxisPosition: mainAxisPosition,
           crossAxisPosition: crossAxisPosition);
     }
-    return true;
+    return false;
   }
 
   // Simplified hitTestBoxChild
