@@ -11,7 +11,7 @@ The Custom Sliver package contains following slivers:
 
 
 
-## SliverLayers, with SliverMaintainPadding and SliverClipRRect
+## SliverLayers with SliverMaintainPadding and SliverClipRRect
 
 ```Dart
 class SliverLayerBuilderExample extends StatelessWidget {
